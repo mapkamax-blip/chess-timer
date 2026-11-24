@@ -8,7 +8,7 @@
   "action": {
     "title": "TOH Timer",
     "icon": "https://img.icons8.com/ios-filled/100/000000/chess-clock.png",
-    "popover": "https://ТВОЙ_НИК.github.io/chess-timer/index.html",
+    "popover": "https://mapkamax-blip.github.io/chess-timer/index.html",
     "width": 300,
     "height": 450
   }
