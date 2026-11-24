@@ -1,0 +1,15 @@
+{
+  "name": "TOH Chess Timer",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "Maksim",
+  "description": "Синхронизированный шахматный таймер для уроков TOH",
+  "icon": "https://img.icons8.com/ios-filled/100/000000/chess-clock.png",
+  "action": {
+    "title": "TOH Timer",
+    "icon": "https://img.icons8.com/ios-filled/100/000000/chess-clock.png",
+    "popover": "https://ТВОЙ_НИК.github.io/chess-timer/index.html",
+    "width": 300,
+    "height": 450
+  }
+}
