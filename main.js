@@ -1,5 +1,5 @@
 // 1. Подключаем официальное SDK Owlbear Rodeo
-import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.2.1/+esm";
+import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.1.0/+esm";
 
 console.log("TOH Timer: Скрипт успешно загружен!");
 
