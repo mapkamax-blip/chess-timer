@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOH Chess Timer</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Подключаем SDK Owlbear Rodeo напрямую -->
+    <script src="https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.2.1/dist/index.umd.min.js"></script>
 </head>
 <body>
     <div class="timer-container">
@@ -25,6 +27,7 @@
             <div class="time-display" id="time-white">10:00</div>
         </div>
     </div>
-    <script type="module" src="main.js"></script>
+    <!-- Подключаем наш скрипт как обычный файл -->
+    <script src="main.js"></script>
 </body>
 </html>
