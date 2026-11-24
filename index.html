@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="timer-container">
+        <!-- Панель Черных -->
         <div class="player-panel" id="panel-black">
             <div class="player-name">ЧЁРНЫЕ</div>
             <div class="time-display" id="time-black">10:00</div>
@@ -18,11 +19,17 @@
             <button id="btn-reset" class="btn-reset">СБРОС</button>
         </div>
 
+        <!-- Панель Белых -->
         <div class="player-panel active" id="panel-white">
             <div class="player-name">БЕЛЫЕ</div>
             <div class="time-display" id="time-white">10:00</div>
         </div>
     </div>
-    <script type="module" src="main.js"></script>
+
+    <!-- 1. Подключаем официальное SDK Owlbear Rodeo через unpkg -->
+    <script src="https://unpkg.com/@owlbear-rodeo/sdk@latest/dist/index.js"></script>
+    
+    <!-- 2. Подключаем наш скрипт (без type="module") -->
+    <script src="main.js"></script>
 </body>
 </html>
