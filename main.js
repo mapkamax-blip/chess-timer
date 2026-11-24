@@ -1,4 +1,4 @@
-import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.2.0/+esm";
+
 
 const DEFAULT_TIME = 10 * 60; // 10 минут
 const METADATA_KEY = "com.toh/chess-timer"; // Уникальный ключ для хранения данных
