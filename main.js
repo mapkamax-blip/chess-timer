@@ -1,15 +1,21 @@
+// 1. Подключаем официальное SDK Owlbear Rodeo
+import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk@3.2.1/+esm";
 
+console.log("TOH Timer: Скрипт успешно загружен!");
 
-const DEFAULT_TIME = 10 * 60; // 10 минут
-const METADATA_KEY = "com.toh/chess-timer"; // Уникальный ключ для хранения данных
+// 2. Настройки
+const DEFAULT_TIME = 10 * 60; // 10 минут в секундах
+const METADATA_KEY = "com.toh/chess-timer"; // Уникальный ключ для хранения данных в комнате
 
+// 3. Переменные состояния
 let timeWhite = DEFAULT_TIME;
 let timeBlack = DEFAULT_TIME;
 let isRunning = false;
-let activePlayer = 'white';
+let activePlayer = 'white'; // 'white' или 'black'
 let timerInterval = null;
-let isGM = false;
+let isGM = false; // Является ли текущий пользователь Мастером
 
+// 4. Получаем элементы со страницы HTML
 const timeWhiteEl = document.getElementById('time-white');
 const timeBlackEl = document.getElementById('time-black');
 const panelWhite = document.getElementById('panel-white');
@@ -17,7 +23,7 @@ const panelBlack = document.getElementById('panel-black');
 const btnStart = document.getElementById('btn-start');
 const btnReset = document.getElementById('btn-reset');
 
-// Форматирование времени (120 -> 02:00)
+// 5. Функция форматирования времени (120 секунд -> "02:00")
 function formatTime(seconds) {
     if (seconds < 0) seconds = 0;
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -25,11 +31,12 @@ function formatTime(seconds) {
     return `${m}:${s}`;
 }
 
-// Обновление интерфейса
+// 6. Функция обновления интерфейса
 function updateUI() {
     timeWhiteEl.textContent = formatTime(timeWhite);
     timeBlackEl.textContent = formatTime(timeBlack);
 
+    // Подсветка активного игрока
     if (activePlayer === 'white') {
         panelWhite.classList.add('active');
         panelBlack.classList.remove('active');
@@ -38,10 +45,11 @@ function updateUI() {
         panelWhite.classList.remove('active');
     }
     
-    btnStart.textContent = isRunning ? 'ПАУЗА' : (timeWhite < DEFAULT_TIME || timeBlack < DEFAULT_TIME ? 'ПРОДОЛЖИТЬ' : 'СТАРТ');
+    // Текст на кнопке Старт/Пауза
+    btnStart.textContent = isRunning ? 'ПАУЗА' : 'СТАРТ';
 }
 
-// Сохранение состояния в Owlbear (синхронизация для всех)
+// 7. Сохранение состояния в Owlbear (чтобы у всех игроков было одинаково)
 function saveStateToOBR() {
     OBR.room.setMetadata({
         [METADATA_KEY]: {
@@ -50,10 +58,10 @@ function saveStateToOBR() {
             isRunning,
             activePlayer
         }
-    }).catch(err => console.error("Ошибка синхронизации:", err));
+    }).catch(err => console.error("Ошибка сохранения состояния:", err));
 }
 
-// Логика тика (вызывается раз в секунду)
+// 8. Логика тика таймера (вызывается каждую секунду)
 function tick() {
     if (!isRunning) return;
 
@@ -76,12 +84,13 @@ function tick() {
     }
     
     updateUI();
-    saveStateToOBR(); // Отправляем обновление другим игрокам
+    saveStateToOBR(); // Отправляем данные другим игрокам
 }
 
-// Запуск / Пауза
+// 9. Обработчик кнопки СТАРТ/ПАУЗА
 btnStart.addEventListener('click', () => {
-    if (!isGM) return; // Только Мастер может управлять таймером
+    if (!isGM) return; // Если это не Мастер, кнопка не работает
+    console.log("Нажата кнопка СТАРТ/ПАУЗА");
 
     if (isRunning) {
         clearInterval(timerInterval);
@@ -94,10 +103,11 @@ btnStart.addEventListener('click', () => {
     saveStateToOBR();
 });
 
-// Сброс
+// 10. Обработчик кнопки СБРОС
 btnReset.addEventListener('click', () => {
     if (!isGM) return;
 
+    console.log("Нажата кнопка СБРОС");
     clearInterval(timerInterval);
     isRunning = false;
     timeWhite = DEFAULT_TIME;
@@ -107,7 +117,7 @@ btnReset.addEventListener('click', () => {
     saveStateToOBR();
 });
 
-// Клик по панели для переключения хода (только для Мастера)
+// 11. Клик по панели для смены хода
 function switchTurn(player) {
     if (!isGM) return;
     if (activePlayer === player) return;
@@ -121,13 +131,16 @@ panelWhite.addEventListener('click', () => switchTurn('white'));
 panelBlack.addEventListener('click', () => switchTurn('black'));
 
 
-// === ИНИЦИАЛИЗАЦИЯ И СИНХРОНИЗАЦИЯ OBR ===
+// 12. ИНИЦИАЛИЗАЦИЯ И СИНХРОНИЗАЦИЯ (Запускается при готовности Owlbear)
 OBR.onReady(async () => {
-    // Проверяем, является ли текущий пользователь Мастером (GM)
+    console.log("TOH Timer: Owlbear готов к работе!");
+    
+    // Проверяем, Мастер ли ты
     const role = await OBR.player.getRole();
     isGM = (role === 'GM');
+    console.log("Статус пользователя: " + (isGM ? "Мастер (GM)" : "Игрок"));
 
-    // Загружаем текущее состояние из комнаты
+    // Загружаем сохраненное время из комнаты
     const metadata = await OBR.room.getMetadata();
     if (metadata[METADATA_KEY]) {
         const state = metadata[METADATA_KEY];
@@ -136,7 +149,6 @@ OBR.onReady(async () => {
         isRunning = state.isRunning;
         activePlayer = state.activePlayer;
         
-        // Если таймер работал до этого, запускаем локальный интервал
         if (isRunning) {
             timerInterval = setInterval(tick, 1000);
         }
